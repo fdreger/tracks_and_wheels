@@ -1,7 +1,22 @@
 package net.bajobongo.tracks;
 
+import java.util.Collection;
 import java.util.List;
 
+/**
+ * Section of a track between two points.
+ *
+ * Section:
+ *  - knows its ends (points a and b),
+ *  - knows its length,
+ *  - knows its shape - i.e. coords of a point at the given distance from either end,
+ *  - in the future it should know the tangent for any of the points
+ *  - does not know anything about the outside world such as other sections, points etc.
+ *
+ *  The class is in theory meant to be extended to provide different shapes.
+ *  In practice it will probably be better to stick with the basic implementation (a linear section).
+ *
+ */
 public class Section {
 
     public final static Section NULL = new Section(Point.NULL, Point.NULL);
@@ -10,48 +25,69 @@ public class Section {
     private final Point b;
     private final float length;
 
+    /**
+     * Creates a new linear section. Parameters must not be null.
+     *
+     * @param a
+     * @param b
+     */
     public Section(Point a, Point b) {
         assert a != null && b != null;
         this.a = a;
         this.b = b;
         length = distance(a, b);
     }
-    
+
+    /**
+     * Returns point a or b, depending on which one was passed as the parameter.
+     *
+    * @param end MUST be one of the section's ends
+     * @return
+     */
     public Point getOtherEnd(Point end) {
         assert a == end || b == end;
         return end == a ? b : a;
     }
 
-    public static Section firstThatEndsWith(Point point, List<Section> sections) {
+    /**
+     * A utility for finding the first section that ends with the given point.
+     * If no section found, returns a null section.
+     *
+     * @param point
+     * @param sections
+     * @return
+     */
+    public static Section firstThatEndsWith(Point point, Collection<? extends Section> sections) {
         for (Section section : sections) {
             if (section.a.equals(point) || section.b.equals(point)) {
                 return section;
             }
         }
-        return null;
+        return Section.NULL;
     }
 
-    private float distance(Point a, Point b) {
-        assert a != null && b != null;
-        final float dx = a.x - b.x;
-        final float dy = a.y - b.y;
-        return (float) Math.sqrt(dx * dx + dy * dy);
-    }
-
+    /**
+     * Given an end and a distance from the end, the method calculates coordinates of the point in section and returns X.
+     *
+     * @param fromPoint MUST be one of the end points of the Section
+     * @param positionInSection must be between 0 and the section's length, inclusive
+     * @return
+     */
     public float getXForPosition(Point fromPoint, float positionInSection) {
         assert positionInSection >= 0 && positionInSection <= length;
-        final Point placeFrom = fromPoint;
-        final Point placeTo = getOtherEnd(placeFrom);
-        float norm = positionInSection / length;
-        return placeFrom.x + (placeTo.x - placeFrom.x) * norm;
+        return tweenBetween(positionInSection, fromPoint.x, getOtherEnd(fromPoint).x);
     }
 
+    /**
+     * Given an end and a distance from the end, the method calculates coordinates of the point in section and returns Y.
+     *
+     * @param fromPoint MUST be one of the end points of the Section
+     * @param positionInSection must be between 0 and the section's length, inclusive
+     * @return
+     */
     public float getYForPosition(Point fromPoint, float positionInSection) {
         assert positionInSection >= 0 && positionInSection <= length;
-        final Point placeFrom = fromPoint;
-        final Point placeTo = getOtherEnd(placeFrom);
-        float norm = positionInSection / length;
-        return placeFrom.y + (placeTo.y - placeFrom.y) * norm;
+        return tweenBetween(positionInSection, fromPoint.y, getOtherEnd(fromPoint).y);
     }
 
     public Point getA() {
@@ -91,4 +127,17 @@ public class Section {
                 ", b=" + b +
                 '}';
     }
+
+    private float distance(Point a, Point b) {
+        assert a != null && b != null;
+        final float dx = a.x - b.x;
+        final float dy = a.y - b.y;
+        return (float) Math.sqrt(dx * dx + dy * dy);
+    }
+
+    private float tweenBetween(float positionInSection, float fromX, float toX) {
+        float norm = positionInSection / length;
+        return fromX + (toX - fromX) * norm;
+    }
+
 }

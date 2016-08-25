@@ -1,31 +1,20 @@
 package net.bajobongo.tracks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class TracksLayout {
+/**
+ * Encompasses data for the connections between sections and the logic for moving wheels between those sections.
+ *
+ * Does not contain any sort of logic for selecting the right track - delegates those choices to a SwitchBoard given as a parameter. If no switchBoard given, falls back to a single track implementation that does handle loops and tracks, but does not handle any forking.
+ *
+ */
+public final class TracksLayout {
 
     private final Map<Point, List<Section>> index = new HashMap<Point, List<Section>>();
-    private final static SwitchBoard noSwitchesSwitchBoard = new SwitchBoard() {
-        public Section switchTo(Point end, Section currentSection, List<Section> availableSections) {
-            if (availableSections.size() == 1) {
-                return Section.NULL;
-            }
-            if (availableSections.size() != 2) {
-                throw new RuntimeException("Layout without a switchboard has " + availableSections.size() + " sections stemming from point " + end);
-            }
-            Section a = availableSections.get(0);
-            Section b = availableSections.get(1);
-            return currentSection == a ? b : a;
-        }
-    };
 
     private Section findOtherSectionFrom(Point otherEnd, Section currentSection, SwitchBoard switchBoard) {
         return switchBoard.switchTo(otherEnd, currentSection, index.get(otherEnd));
     }
-
 
     public Section connect(Point a, Point b) {
         Section s = new Section(a, b);
@@ -35,7 +24,7 @@ public class TracksLayout {
     }
 
     public float move(Wheel wheel, float distance) {
-        return move(wheel, distance, noSwitchesSwitchBoard);
+        return move(wheel, distance, SwitchBoard.SINGLE_TRACK);
     }
 
     public float move(Wheel wheel, float distance, SwitchBoard switchBoard) {

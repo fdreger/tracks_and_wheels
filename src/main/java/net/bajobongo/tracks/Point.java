@@ -1,6 +1,10 @@
 package net.bajobongo.tracks;
 
-public class Point {
+/**
+ * An immutable point.
+ *
+ */
+public final class Point {
 
     public final float x;
     public final float y;
