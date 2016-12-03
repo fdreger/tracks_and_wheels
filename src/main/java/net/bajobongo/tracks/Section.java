@@ -50,23 +50,6 @@ public class Section {
     }
 
     /**
-     * A utility for finding the first section that ends with the given point.
-     * If no section found, returns a null section.
-     *
-     * @param point
-     * @param sections
-     * @return
-     */
-    public static Section firstThatEndsWith(Point point, Collection<? extends Section> sections) {
-        for (Section section : sections) {
-            if (section.a.equals(point) || section.b.equals(point)) {
-                return section;
-            }
-        }
-        return Section.NULL;
-    }
-
-    /**
      * Given an end and a distance from the end, the method calculates coordinates of the point in section and returns X.
      *
      * @param fromPoint MUST be one of the end points of the Section
@@ -135,9 +118,27 @@ public class Section {
         return (float) Math.sqrt(dx * dx + dy * dy);
     }
 
-    private float tweenBetween(float positionInSection, float fromX, float toX) {
-        float norm = positionInSection / length;
-        return fromX + (toX - fromX) * norm;
+    private float tweenBetween(float positionInSection, float a, float b) {
+        float normalized = positionInSection / length;
+        return a + (b - a) * normalized;
+    }
+
+
+    /**
+     * A utility for finding the first section that ends or begins with the given point.
+     * If no section found, returns a null section.
+     *
+     * @param point
+     * @param sections
+     * @return
+     */
+    public static Section firstThatEndsWith(Point point, Collection<? extends Section> sections) {
+        for (Section section : sections) {
+            if (section.a.equals(point) || section.b.equals(point)) {
+                return section;
+            }
+        }
+        return Section.NULL;
     }
 
 }

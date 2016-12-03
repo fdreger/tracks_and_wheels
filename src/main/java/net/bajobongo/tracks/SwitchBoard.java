@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * SwitchBoard interface represents a function deciding which section should be selected after the first one ends.
+ * SwitchBoard interface represents a function deciding which section
+ * should be selected after the first one ends.
  *
  * This interface is also the main API for the users of the library.
  *

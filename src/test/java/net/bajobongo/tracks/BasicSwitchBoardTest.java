@@ -1,6 +1,5 @@
 package net.bajobongo.tracks;
 
-import net.bajobongo.tracks.basic.BasicSwitchBoard;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class BasicSwitchBoardTest {
 
-    BasicSwitchBoard basicSwitchBoard;
     TracksLayout layout;
     Point a = new Point(0,0);
     Point b = new Point(1,0);
@@ -25,6 +23,8 @@ public class BasicSwitchBoardTest {
     Section cd;
     Section da;
 
+    private SwitchBoard switchBoard;
+
     @Before
     public void pre() {
         layout = new TracksLayout();
@@ -34,27 +34,27 @@ public class BasicSwitchBoardTest {
         da = layout.connect(d, a);
         layout.connect(c, e);
         layout.connect(c, f);
-        basicSwitchBoard = new BasicSwitchBoard();
+        switchBoard = SwitchBoard.SINGLE_TRACK;
     }
 
     @Test
     public void movesAlongASingleTrack() {
         Wheel wheel = new Wheel(ab, 0, ab.getA());
-        layout.move(wheel, 0.99f, basicSwitchBoard);
+        layout.move(wheel, 0.99f, switchBoard);
         assertThat(wheel.section).isSameAs(ab);
     }
 
     @Test
     public void movesAlongTwoTracks() {
         Wheel wheel = new Wheel(ab, 0, ab.getA());
-        layout.move(wheel, 1.5f, basicSwitchBoard);
+        layout.move(wheel, 1.5f, switchBoard);
         assertThat(wheel.section).isEqualTo(bc);
     }
 
     @Test
     public void movesAlongTwoTracksBackwards() {
         Wheel wheel = new Wheel(ab, 0, ab.getA());
-        layout.move(wheel, -0.5f, basicSwitchBoard);
+        layout.move(wheel, -0.5f, switchBoard);
         assertThat(wheel.section.getA()).isEqualTo(d);
         assertThat(wheel.section.getB()).isEqualTo(a);
     }
@@ -64,7 +64,7 @@ public class BasicSwitchBoardTest {
         Wheel wheel = new Wheel(ab, 0.25f, ab.getA());
         Wheel copy = wheel.copy();
 
-        layout.move(wheel, 4f, basicSwitchBoard);
+        layout.move(wheel, 4f, switchBoard);
         assertThat(wheel.section).isEqualTo(copy.section);
         assertThat(wheel.fromPoint).isEqualTo(copy.fromPoint);
         assertThat(wheel.positionInSection).isEqualTo(copy.positionInSection);
@@ -75,7 +75,7 @@ public class BasicSwitchBoardTest {
         Wheel wheel = new Wheel(ab, 0.25f, ab.getA());
         Wheel copy = wheel.copy();
 
-        layout.move(wheel, -4f, basicSwitchBoard);
+        layout.move(wheel, -4f, switchBoard);
         assertThat(wheel.section).isEqualTo(copy.section);
         assertThat(wheel.fromPoint).isEqualTo(copy.fromPoint);
         assertThat(wheel.positionInSection).isEqualTo(copy.positionInSection);

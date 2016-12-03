@@ -3,9 +3,14 @@ package net.bajobongo.tracks;
 import java.util.*;
 
 /**
- * Encompasses data for the connections between sections and the logic for moving wheels between those sections.
+ * Encompasses data for the connections between sections
+ * and the logic for moving wheels between those sections.
  *
- * Does not contain any sort of logic for selecting the right track - delegates those choices to a SwitchBoard given as a parameter. If no switchBoard given, falls back to a single track implementation that does handle loops and tracks, but does not handle any forking.
+ * Does not contain any sort of logic for selecting the right track
+ * - delegates those choices to a SwitchBoard given as a parameter.
+ *
+ * If no switchBoard given, falls back to a single track implementation
+ * that does handle loops and tracks, but does not handle any forking.
  *
  */
 public final class TracksLayout {
@@ -34,28 +39,32 @@ public final class TracksLayout {
         float possibleMoveUpperBound = wheel.section.getLength() - wheel.positionInSection;
         float possibleMoveLowerBound =  -wheel.positionInSection;
 
-        if (distance >= possibleMoveUpperBound) {
-            Point otherEnd = wheel.section.getOtherEnd(wheel.fromPoint);
-            Section nextSection = findOtherSectionFrom(otherEnd, wheel.section, switchBoard);
-            wheel.fromPoint = otherEnd;
-            wheel.section = nextSection;
-            wheel.positionInSection = 0;
-            return possibleMoveUpperBound + move(wheel, distance - possibleMoveUpperBound, switchBoard);
+        final boolean overflow = distance >= possibleMoveUpperBound;
+        final boolean underflow = distance < possibleMoveLowerBound;
 
-        } else if (distance < possibleMoveLowerBound) {
-            Section nextSection = findOtherSectionFrom(wheel.fromPoint, wheel.section, switchBoard);
-            Point otherEnd = nextSection.getOtherEnd(wheel.fromPoint);
-            
-            wheel.fromPoint = otherEnd;
-            wheel.section = nextSection;
-            wheel.positionInSection = nextSection.getLength();
-            return possibleMoveLowerBound + move(wheel, distance - possibleMoveLowerBound, switchBoard);
-            
+        if (overflow || underflow) {
+            if (overflow) {
+                Point otherEnd = wheel.section.getOtherEnd(wheel.fromPoint);
+                Section nextSection = findOtherSectionFrom(otherEnd, wheel.section, switchBoard);
+                wheel.fromPoint = otherEnd;
+                wheel.section = nextSection;
+                wheel.positionInSection = 0;
+                return possibleMoveUpperBound + move(wheel, distance - possibleMoveUpperBound, switchBoard);
+            } else {
+                Section nextSection = findOtherSectionFrom(wheel.fromPoint, wheel.section, switchBoard);
+                Point otherEnd = nextSection.getOtherEnd(wheel.fromPoint);
+
+                wheel.fromPoint = otherEnd;
+                wheel.section = nextSection;
+                wheel.positionInSection = nextSection.getLength();
+                return possibleMoveLowerBound + move(wheel, distance - possibleMoveLowerBound, switchBoard);
+            }
+
         } else {
-            wheel.positionInSection += distance;
-            wheel.recalculateWorldCoords();
-            return distance;
-        }
+                wheel.positionInSection += distance;
+                wheel.recalculateWorldCoords();
+                return distance;
+            }
     }
 
     private void addToIndex(Point punkt, Section sekcja) {
