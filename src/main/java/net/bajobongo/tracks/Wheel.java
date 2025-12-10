@@ -12,7 +12,7 @@ final public class Wheel {
         assert positionInSection >= 0;
         assert positionInSection < section.getLength();
         assert fromPoint != null;
-        assert fromPoint == section.getA() || fromPoint == section.getB();
+        assert fromPoint.equals(section.getA()) || fromPoint.equals(section.getB());
         this.section = section;
         this.positionInSection = positionInSection;
         this.fromPoint = fromPoint;

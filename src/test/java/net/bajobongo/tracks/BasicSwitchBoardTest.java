@@ -12,11 +12,10 @@ public class BasicSwitchBoardTest {
 
     TracksLayout layout;
     Point a = new Point(0,0);
+    Point a1 = new Point(0,0);
     Point b = new Point(1,0);
     Point c = new Point(1,1);
     Point d = new Point(0,1);
-    Point e = new Point(3,3);
-    Point f = new Point(4,4);
 
     Section ab;
     Section bc;
@@ -31,9 +30,7 @@ public class BasicSwitchBoardTest {
         ab = layout.connect(a, b);
         bc = layout.connect(b, c);
         cd = layout.connect(c, d);
-        da = layout.connect(d, a);
-        layout.connect(c, e);
-        layout.connect(c, f);
+        da = layout.connect(d, a1);
         switchBoard = SwitchBoard.SINGLE_TRACK;
     }
 

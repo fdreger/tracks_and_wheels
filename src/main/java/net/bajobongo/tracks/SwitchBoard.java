@@ -23,7 +23,7 @@ public interface SwitchBoard {
                     Iterator<? extends Section> iter = availableSections.iterator();
                     Section a = iter.next();
                     Section b = iter.next();
-                    return currentSection == a ? b : a;
+                    return currentSection.equals(a) ? b : a;
                 default:
                     throw new RuntimeException("SINGLE_TRACK switchboard overwhelmed by " + choices + " choices for node " + end);
             }

@@ -45,8 +45,8 @@ public class Section {
      * @return
      */
     public Point getOtherEnd(Point end) {
-        assert a == end || b == end;
-        return end == a ? b : a;
+        assert a.equals(end) || b.equals(end);
+        return end.equals(a) ? b : a;
     }
 
     /**
