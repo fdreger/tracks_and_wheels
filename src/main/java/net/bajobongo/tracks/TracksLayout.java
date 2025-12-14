@@ -13,20 +13,30 @@ import java.util.*;
  * that does handle loops and tracks, but does not handle any forking.
  *
  */
-public final class TracksLayout {
+public final class TracksLayout<Payload> {
 
     private final Map<Point, List<Section>> index = new HashMap<Point, List<Section>>();
+
 
     private Section findOtherSectionFrom(Point otherEnd, Section currentSection, SwitchBoard switchBoard) {
         return switchBoard.switchTo(otherEnd, currentSection, index.get(otherEnd));
     }
 
     public Section connect(Point a, Point b) {
-        Section s = new Section(a, b);
+        return connect(a, b, null);
+    }
+
+    public Section connect(Point a, Point b, Payload payload) {
+        Section s = new Section(a, b, payload);
         addToIndex(a, s);
         addToIndex(b, s);
         return s;
     }
+
+    public Payload retrievePayload(Section section) {
+        return (Payload) section.payload();
+    }
+
 
     public float move(Wheel wheel, float distance) {
         return move(wheel, distance, SwitchBoard.SINGLE_TRACK);

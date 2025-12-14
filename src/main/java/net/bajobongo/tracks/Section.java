@@ -14,28 +14,28 @@ import java.util.List;
  *  - does not know anything about the outside world such as other sections, points etc.
  *
  *  The class is in theory meant to be extended to provide different shapes.
- *  In practice it will probably be better to stick with the basic implementation (a linear section).
+ *  In practice, it will probably be better to stick with the basic implementation (a linear section).
  *
  */
 public class Section {
 
-    public final static Section NULL = new Section(Point.NULL, Point.NULL);
+    public final static Section NULL = new Section(Point.NULL, Point.NULL, null);
 
     private final Point a;
     private final Point b;
     private final float length;
+    private final Object payload;
 
-    /**
-     * Creates a new linear section. Parameters must not be null.
-     *
-     * @param a
-     * @param b
-     */
-    public Section(Point a, Point b) {
+    Section(Point a, Point b, Object payload) {
         assert a != null && b != null;
         this.a = a;
         this.b = b;
         length = distance(a, b);
+        this.payload = payload;
+    }
+
+    Object payload() {
+        return payload;
     }
 
     /**
