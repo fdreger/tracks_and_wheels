@@ -41,6 +41,10 @@ final public class Wheel {
         positionInSection = section.getLength() - positionInSection;
     }
 
+    public boolean isForward() {
+        return fromPoint.equals(section.getA());
+    }
+
     public Wheel copy() {
         return new Wheel(section, positionInSection, fromPoint);
     }
